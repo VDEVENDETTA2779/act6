@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Gates — Mapa Mental Creativo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --border: rgba(255,255,255,0.07);
+  --text: #e8e6f0;
+  --muted: #6b6880;
+  --purple: #7c6ff7;
+  --purple-light: #a99ffa;
+  --purple-dim: rgba(124,111,247,0.12);
+  --green: #3ecf8e;
+  --green-dim: rgba(62,207,142,0.12);
+  --amber: #f5a623;
+  --amber-dim: rgba(245,166,35,0.12);
+  --coral: #f06449;
+  --coral-dim: rgba(240,100,73,0.12);
+  --blue: #60a5fa;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* ── HEADER ── */
+header {
+  position: relative; z-index: 10;
+  padding: 3rem 4rem 2rem;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem;
+  animation: fadeDown .6s ease both;
+}
+.header-left { max-width: 560px; }
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--purple-light); margin-bottom: .75rem;
+}
+h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1; color: var(--text);
+  font-style: italic;
+}
+h1 span { color: var(--purple-light); font-style: normal; }
+.subtitle {
+  margin-top: .75rem; font-size: 14px; color: var(--muted);
+  font-family: 'DM Mono', monospace; line-height: 1.6;
+}
+.header-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: .5rem;
+}
+.stat {
+  font-family: 'DM Serif Display', serif; font-size: 2.5rem;
+  color: var(--purple-light); line-height: 1;
+}
+.stat-label { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+
+/* ── LAYOUT ── */
+.page { position: relative; z-index: 1; padding: 2rem 4rem 4rem; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; gap: 1.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;
+  animation: fadeUp .6s .2s ease both;
+}
+.leg { display: flex; align-items: center; gap: .5rem; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── MIND MAP GRID ── */
+.mindmap {
+  display: grid;
+  grid-template-columns: 1fr 340px 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ── CENTER NODE ── */
+.center-node {
+  grid-column: 2; grid-row: 1 / 4;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, #1a1630 0%, #0f0f1a 100%);
+  border: 1px solid rgba(124,111,247,0.3);
+  border-radius: 24px;
+  padding: 2.5rem 1.5rem;
+  position: relative; cursor: pointer;
+  transition: border-color .3s, transform .3s;
+  animation: fadeUp .7s .1s ease both;
+  min-height: 420px;
+}
+.center-node:hover { border-color: var(--purple); transform: scale(1.02); }
+.center-node::before {
+  content: '';
+  position: absolute; inset: -1px; border-radius: 24px;
+  background: linear-gradient(135deg, var(--purple), transparent, var(--blue));
+  opacity: 0; transition: opacity .3s; z-index: -1;
+}
+.center-node:hover::before { opacity: .15; }
+
+.avatar {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: var(--purple-dim);
+  border: 2px solid rgba(124,111,247,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem; color: var(--purple-light);
+  margin: 0 auto 1.25rem;
+  position: relative;
+}
+.avatar::after {
+  content: '';
+  position: absolute; inset: -6px; border-radius: 50%;
+  border: 1px dashed rgba(124,111,247,0.25);
+  animation: spin 20s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.center-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--text);
+  margin-bottom: .25rem;
+}
+.center-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--purple-light);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.center-quote {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: .9rem;
+  color: var(--muted); line-height: 1.6;
+  border-left: 2px solid rgba(124,111,247,.3);
+  padding-left: 1rem; text-align: left;
+  margin-bottom: 1.5rem;
+}
+.center-tags { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center; }
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; padding: 3px 10px; border-radius: 99px;
+  letter-spacing: .06em;
+}
+
+/* ── BRANCH COLUMNS ── */
+.col-left  { grid-column: 1; display: flex; flex-direction: column; gap: 1rem; }
+.col-right { grid-column: 3; display: flex; flex-direction: column; gap: 1rem; }
+
+/* ── BRANCH SECTION ── */
+.branch {
+  border-radius: 16px;
+  border: 0.5px solid var(--border);
+  overflow: hidden;
+  transition: transform .25s, border-color .25s;
+  animation: fadeUp .6s ease both;
+}
+.branch:hover { transform: translateY(-3px); }
+
+.branch-header {
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center; gap: .75rem; cursor: pointer;
+}
+.branch-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.branch-title { font-size: 13px; font-weight: 700; letter-spacing: .02em; }
+.branch-subtitle { font-size: 11px; font-family: 'DM Mono', monospace; opacity: .65; margin-top: 1px; }
+.branch-arrow {
+  margin-left: auto; font-size: 12px; color: var(--muted);
+  transition: transform .25s;
+}
+.branch.open .branch-arrow { transform: rotate(180deg); }
+
+.branch-body { padding: 0 1rem 1rem; display: none; }
+.branch.open .branch-body { display: block; }
+
+/* ── LEAF NODES ── */
+.leaves { display: flex; flex-direction: column; gap: .5rem; }
+.leaf {
+  padding: .65rem .9rem;
+  border-radius: 10px;
+  border: 0.5px solid var(--border);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  display: flex; align-items: flex-start; gap: .6rem;
+}
+.leaf:hover { border-color: rgba(255,255,255,0.15); }
+.leaf-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.leaf-name { font-size: 12px; font-weight: 600; }
+.leaf-desc { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; line-height: 1.5; }
+
+/* ── COLORS ── */
+.c-purple .branch-header { background: rgba(124,111,247,0.08); border-bottom: 0.5px solid rgba(124,111,247,0.15); }
+.c-purple .branch-icon { background: var(--purple-dim); }
+.c-purple .branch-title { color: var(--purple-light); }
+.c-purple:hover { border-color: rgba(124,111,247,0.3); }
+.c-purple .leaf:hover { background: var(--purple-dim); }
+.c-purple .leaf-dot { background: var(--purple-light); }
+
+.c-green .branch-header { background: rgba(62,207,142,0.08); border-bottom: 0.5px solid rgba(62,207,142,0.15); }
+.c-green .branch-icon { background: var(--green-dim); }
+.c-green .branch-title { color: var(--green); }
+.c-green:hover { border-color: rgba(62,207,142,0.3); }
+.c-green .leaf:hover { background: var(--green-dim); }
+.c-green .leaf-dot { background: var(--green); }
+
+.c-amber .branch-header { background: rgba(245,166,35,0.08); border-bottom: 0.5px solid rgba(245,166,35,0.15); }
+.c-amber .branch-icon { background: var(--amber-dim); }
+.c-amber .branch-title { color: var(--amber); }
+.c-amber:hover { border-color: rgba(245,166,35,0.3); }
+.c-amber .leaf:hover { background: var(--amber-dim); }
+.c-amber .leaf-dot { background: var(--amber); }
+
+.c-coral .branch-header { background: rgba(240,100,73,0.08); border-bottom: 0.5px solid rgba(240,100,73,0.15); }
+.c-coral .branch-icon { background: var(--coral-dim); }
+.c-coral .branch-title { color: var(--coral); }
+.c-coral:hover { border-color: rgba(240,100,73,0.3); }
+.c-coral .leaf:hover { background: var(--coral-dim); }
+.c-coral .leaf-dot { background: var(--coral); }
+
+/* ── MODAL ── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.75);
+  backdrop-filter: blur(8px); z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem; opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface);
+  border: 0.5px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 2rem;
+  max-width: 520px; width: 100%;
+  transform: translateY(16px); transition: transform .25s;
+  position: relative; max-height: 80vh; overflow-y: auto;
+}
+.overlay.open .modal { transform: translateY(0); }
+.modal-tag {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 99px;
+  display: inline-block; margin-bottom: 1rem;
+}
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; color: var(--text); margin-bottom: .25rem;
+}
+.modal-sub {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--muted); margin-bottom: 1.25rem;
+}
+.modal-body { font-size: 14px; color: rgba(232,230,240,.8); line-height: 1.75; }
+.modal-body b { color: var(--text); font-weight: 600; }
+.modal-body ul { padding-left: 1.25rem; margin-top: .5rem; }
+.modal-body li { margin-bottom: .4rem; }
+.modal-body .quote {
+  border-left: 2px solid rgba(255,255,255,.15);
+  padding-left: 1rem; margin: 1rem 0;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: .95rem;
+  color: var(--muted); line-height: 1.65;
+}
+.close-modal {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--surface2); border: 0.5px solid var(--border);
+  color: var(--muted); border-radius: 8px;
+  width: 32px; height: 32px; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; font-size: 14px;
+  transition: background .2s, color .2s;
+}
+.close-modal:hover { background: rgba(255,255,255,.08); color: var(--text); }
+
+/* ── CONNECTOR LINES (decorative) ── */
+.connectors {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 0.5px solid var(--border);
+  padding: 1.5rem 4rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-note { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:none; } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(16px);  } to { opacity:1; transform:none; } }
+
+.col-left  .branch:nth-child(1) { animation-delay: .15s; }
+.col-left  .branch:nth-child(2) { animation-delay: .25s; }
+.col-right .branch:nth-child(1) { animation-delay: .2s; }
+.col-right .branch:nth-child(2) { animation-delay: .3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  header { padding: 2rem; flex-direction: column; align-items: flex-start; }
+  .page { padding: 1.5rem 1.25rem 3rem; }
+  .mindmap { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .center-node { grid-column: 1; grid-row: auto; min-height: unset; }
+  .col-left, .col-right { grid-column: 1; }
+  footer { padding: 1rem 1.25rem; flex-direction: column; gap: .5rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <p class="eyebrow">Mapa mental · Creatividad e innovación</p>
+    <h1>La mente creativa de <span>Bill Gates</span></h1>
+    <p class="subtitle">Componentes del proceso creativo · Competencias · Hábitos · Rasgos de personalidad</p>
+  </div>
+  <div class="header-right">
+    <span class="stat">~50</span>
+    <span class="stat-label">libros leídos por año</span>
+  </div>
+</header>
+
+<div class="page">
+  <div class="legend">
+    <div class="leg"><span class="leg-dot" style="background:var(--purple)"></span>Proceso creativo</div>
+    <div class="leg"><span class="leg-dot" style="background:var(--green)"></span>Competencias</div>
+    <div class="leg"><span class="leg-dot" style="background:var(--amber)"></span>Hábitos</div>
+    <div class="leg"><span class="leg-dot" style="background:var(--coral)"></span>Personalidad</div>
+    <div class="leg" style="margin-left:auto"><span style="font-size:11px;color:var(--muted)">Haz clic en cualquier elemento para explorar →</span></div>
+  </div>
+
+  <div class="mindmap">
+
+    <!-- COL LEFT -->
+    <div class="col-left">
+
+      <!-- BRANCH 1: Proceso -->
+      <div class="branch c-purple" id="b1">
+        <div class="branch-header" onclick="toggleBranch('b1')">
+          <div class="branch-icon">🧠</div>
+          <div>
+            <div class="branch-title">Proceso creativo</div>
+            <div class="branch-subtitle">Método deliberado y estructurado</div>
+          </div>
+          <span class="branch-arrow">▾</span>
+        </div>
+        <div class="branch-body">
+          <div class="leaves">
+            <div class="leaf" onclick="openModal('thinkweek')">
+              <span class="leaf-dot" style="background:var(--purple-light)"></span>
+              <div><div class="leaf-name">Think Week</div><div class="leaf-desc">Retiro anual de 7 días · solo libros e ideas</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('lectura')">
+              <span class="leaf-dot" style="background:var(--purple-light)"></span>
+              <div><div class="leaf-name">Lectura intensiva</div><div class="leaf-desc">Preparación · acumulación de insumos creativos</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('primeros')">
+              <span class="leaf-dot" style="background:var(--purple-light)"></span>
+              <div><div class="leaf-name">Primeros principios</div><div class="leaf-desc">Desmontar supuestos · razonar desde cero</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('soledad')">
+              <span class="leaf-dot" style="background:var(--purple-light)"></span>
+              <div><div class="leaf-name">Soledad creativa</div><div class="leaf-desc">Silencio como espacio de innovación</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRANCH 3: Hábitos -->
+      <div class="branch c-amber" id="b3">
+        <div class="branch-header" onclick="toggleBranch('b3')">
+          <div class="branch-icon">⚡</div>
+          <div>
+            <div class="branch-title">Hábitos desbloqueadores</div>
+            <div class="branch-subtitle">Rutinas que sostienen el flujo</div>
+          </div>
+          <span class="branch-arrow">▾</span>
+        </div>
+        <div class="branch-body">
+          <div class="leaves">
+            <div class="leaf" onclick="openModal('libros')">
+              <span class="leaf-dot" style="background:var(--amber)"></span>
+              <div><div class="leaf-name">50 libros al año</div><div class="leaf-desc">Lectura como combustible creativo</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('notas')">
+              <span class="leaf-dot" style="background:var(--amber)"></span>
+              <div><div class="leaf-name">Notas al margen</div><div class="leaf-desc">Pensamiento activo · externalización de ideas</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('interdis')">
+              <span class="leaf-dot" style="background:var(--amber)"></span>
+              <div><div class="leaf-name">Interdisciplina</div><div class="leaf-desc">Cruzar fronteras entre campos del conocimiento</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('retroal')">
+              <span class="leaf-dot" style="background:var(--amber)"></span>
+              <div><div class="leaf-name">Retroalimentación</div><div class="leaf-desc">Errores como información valiosa</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('optimismo')">
+              <span class="leaf-dot" style="background:var(--amber)"></span>
+              <div><div class="leaf-name">Optimismo estructural</div><div class="leaf-desc">Creer en el progreso basado en datos</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CENTER -->
+    <div class="center-node" onclick="openModal('center')">
+      <div class="avatar">BG</div>
+      <div class="center-name">Bill Gates</div>
+      <div class="center-desc">Cofundador de Microsoft · Filántropo</div>
+      <div class="center-quote">
+        "Siempre he sido optimista. Creo que el poder de la creatividad puede mejorar el mundo."
+      </div>
+      <div class="center-tags">
+        <span class="tag" style="background:var(--purple-dim);color:var(--purple-light)">Proceso</span>
+        <span class="tag" style="background:var(--green-dim);color:var(--green)">Competencias</span>
+        <span class="tag" style="background:var(--amber-dim);color:var(--amber)">Hábitos</span>
+        <span class="tag" style="background:var(--coral-dim);color:var(--coral)">Personalidad</span>
+      </div>
+    </div>
+
+    <!-- COL RIGHT -->
+    <div class="col-right">
+
+      <!-- BRANCH 2: Competencias -->
+      <div class="branch c-green" id="b2">
+        <div class="branch-header" onclick="toggleBranch('b2')">
+          <div class="branch-icon">🔬</div>
+          <div>
+            <div class="branch-title">Competencias creativas</div>
+            <div class="branch-subtitle">Habilidades cognitivas y estratégicas</div>
+          </div>
+          <span class="branch-arrow">▾</span>
+        </div>
+        <div class="branch-body">
+          <div class="leaves">
+            <div class="leaf" onclick="openModal('pensamiento')">
+              <span class="leaf-dot" style="background:var(--green)"></span>
+              <div><div class="leaf-name">Pensamiento sistémico</div><div class="leaf-desc">Ver patrones donde otros ven caos</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('datos')">
+              <span class="leaf-dot" style="background:var(--green)"></span>
+              <div><div class="leaf-name">Decisión por datos</div><div class="leaf-desc">Intuición respaldada por evidencia</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('colaboracion')">
+              <span class="leaf-dot" style="background:var(--green)"></span>
+              <div><div class="leaf-name">Colaboración</div><div class="leaf-desc">Innovación como fenómeno colectivo</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('escala')">
+              <span class="leaf-dot" style="background:var(--green)"></span>
+              <div><div class="leaf-name">Visión a escala global</div><div class="leaf-desc">Diseñar para millones, no para pocos</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRANCH 4: Personalidad -->
+      <div class="branch c-coral" id="b4">
+        <div class="branch-header" onclick="toggleBranch('b4')">
+          <div class="branch-icon">🎯</div>
+          <div>
+            <div class="branch-title">Rasgos de personalidad</div>
+            <div class="branch-subtitle">El carácter que amplifica la creatividad</div>
+          </div>
+          <span class="branch-arrow">▾</span>
+        </div>
+        <div class="branch-body">
+          <div class="leaves">
+            <div class="leaf" onclick="openModal('curiosidad')">
+              <span class="leaf-dot" style="background:var(--coral)"></span>
+              <div><div class="leaf-name">Curiosidad insaciable</div><div class="leaf-desc">Desde los 13 años programando</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('tolerancia')">
+              <span class="leaf-dot" style="background:var(--coral)"></span>
+              <div><div class="leaf-name">Tolerancia a la ambigüedad</div><div class="leaf-desc">Comodidad con lo incierto y el largo plazo</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('autoexig')">
+              <span class="leaf-dot" style="background:var(--coral)"></span>
+              <div><div class="leaf-name">Autoexigencia</div><div class="leaf-desc">Perfeccionismo funcional como motor</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('autonomia')">
+              <span class="leaf-dot" style="background:var(--coral)"></span>
+              <div><div class="leaf-name">Autonomía intelectual</div><div class="leaf-desc">Defender ideas impopulares con datos</div></div>
+            </div>
+            <div class="leaf" onclick="openModal('mision')">
+              <span class="leaf-dot" style="background:var(--coral)"></span>
+              <div><div class="leaf-name">Misión global</div><div class="leaf-desc">Creatividad al servicio de un propósito mayor</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-note">Mapa mental · Persona creativa · Bill Gates</div>
+  <div class="footer-note">Fuentes: GatesNotes · WSJ · NPR · Csikszentmihalyi · Guilford (1950)</div>
+</footer>
+
+<!-- MODAL OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="close-modal" onclick="closeModal()">✕</button>
+    <div class="modal-tag" id="m-tag"></div>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-sub" id="m-sub"></div>
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  center: {
+    tag:'Persona creativa', tc:'#7c6ff7', tt:'#0a0a0f',
+    title:'Bill Gates — Perfil creativo completo',
+    sub:'Cofundador de Microsoft · Fundación Bill y Melinda Gates',
+    body:`Bill Gates es un caso fascinante de creatividad técnica y estratégica. Su capacidad innovadora no se basa en la inspiración romántica, sino en un método deliberado y disciplinado.<br><br>
+    Su perfil integra cuatro dimensiones:<ul>
+    <li><b>Proceso creativo:</b> Think Week, lectura intensiva, primeros principios</li>
+    <li><b>Competencias:</b> pensamiento sistémico, decisión por datos, visión a escala</li>
+    <li><b>Hábitos:</b> 50 libros/año, notas al margen, interdisciplina</li>
+    <li><b>Personalidad:</b> curiosidad, autonomía, misión global</li></ul>
+    <div class="quote">"Las grandes empresas nacen de personas que tienen una visión diferente del futuro." — Bill Gates</div>`
+  },
+  thinkweek: {
+    tag:'Proceso · Incubación', tc:'#7c6ff7', tt:'#0a0a0f',
+    title:'Think Week',
+    sub:'La semana de pensar — dos veces al año',
+    body:`Dos veces al año, Gates se aisla en una cabaña en el bosque del noroeste del Pacífico durante una semana completa. Sin reuniones, sin e-mails, sin interacciones sociales. Solo él, libros y papeles técnicos de sus colaboradores.<br><br>
+    Lee hasta <b>18 horas al día</b>, toma notas intensivamente y permite que las ideas se conecten libremente durante la incubación.<br><br>
+    <div class="quote">"En 1995, un memo de Think Week titulado 'The Internet Tidal Wave' llevó directamente al desarrollo de Internet Explorer." — Wall Street Journal</div>
+    De estas semanas también surgieron el Tablet PC, el negocio de videojuegos en línea y múltiples iniciativas de la Fundación Gates para combatir enfermedades en países en desarrollo.`
+  },
+  lectura: {
+    tag:'Proceso · Preparación', tc:'#7c6ff7', tt:'#0a0a0f',
+    title:'Lectura intensiva',
+    sub:'~50 libros al año en múltiples disciplinas',
+    body:`Gates es un lector sistemático y voraz. Lee libros de ciencia, historia, economía, medicina, epidemiología, energía y humanidades. Toma notas al margen en casi todos.<br><br>
+    Su filosofía: <b>la creatividad requiere material bruto</b>. Cuanto más amplio es el conocimiento base, más conexiones inesperadas puede establecer el cerebro durante la incubación.<br><br>
+    Comparte sus reseñas en <b>GatesNotes</b>, su blog personal, donde recomienda títulos a millones de lectores en todo el mundo.`
+  },
+  primeros: {
+    tag:'Proceso · Método', tc:'#7c6ff7', tt:'#0a0a0f',
+    title:'Pensamiento de primeros principios',
+    sub:'Desmontar supuestos y reconstruir desde cero',
+    body:`Gates no acepta las soluciones existentes como el punto de partida definitivo. Descompone cada problema en sus elementos fundamentales y razona desde ahí, sin las restricciones del "así siempre se ha hecho".<br><br>
+    <b>Ejemplo real:</b> en lugar de mejorar marginalmente las vacunas existentes para países en desarrollo, cuestionó toda la cadena de frío y el sistema de distribución desde sus raíces. Esto llevó a innovaciones radicales en logística médica que han salvado millones de vidas.`
+  },
+  soledad: {
+    tag:'Proceso · Condición', tc:'#7c6ff7', tt:'#0a0a0f',
+    title:'Soledad creativa',
+    sub:'El silencio como espacio indispensable',
+    body:`Gates reconoce que necesita períodos de soledad profunda para generar sus mejores ideas. El ruido constante de las demandas cotidianas impide el tipo de pensamiento asociativo que produce innovación real.<br><br>
+    <div class="quote">"Necesito tiempo para leer y pensar en los problemas con cuidado." — Bill Gates</div>
+    La soledad no es aislamiento permanente: es el contrapunto necesario a la colaboración intensa. Alterna entre períodos de conexión total con su equipo y retiros de desconexión radical.`
+  },
+  pensamiento: {
+    tag:'Competencia · Cognitiva', tc:'#3ecf8e', tt:'#0a0a0f',
+    title:'Pensamiento sistémico',
+    sub:'Ver patrones donde otros ven caos',
+    body:`Gates descompone cualquier problema en sus componentes mínimos, identifica los puntos de apalancamiento y construye soluciones que se escalan de forma predecible. Este es el mismo método que usó para diseñar software eficiente en los años 70 y para combatir enfermedades infecciosas complejas en el siglo XXI.<br><br>
+    En ambos contextos, la pregunta fundamental es la misma: <b>¿cuál es el cuello de botella del sistema?</b>`
+  },
+  datos: {
+    tag:'Competencia · Estratégica', tc:'#3ecf8e', tt:'#0a0a0f',
+    title:'Decisión basada en datos',
+    sub:'Intuición respaldada por evidencia rigurosa',
+    body:`Gates es escéptico de las decisiones puramente intuitivas. Antes de actuar, investiga, mide y analiza. En la Fundación Gates aplica métricas rigurosas a cada programa de salud o educación, algo inusual en el mundo de la filantropía tradicional.<br><br>
+    <div class="quote">"Abrazar las malas noticias te dice exactamente dónde necesitas mejorar más." — Bill Gates</div>`
+  },
+  colaboracion: {
+    tag:'Competencia · Social', tc:'#3ecf8e', tt:'#0a0a0f',
+    title:'Colaboración estratégica',
+    sub:'La innovación como fenómeno colectivo',
+    body:`Gates construyó Microsoft bajo la premisa de que la creatividad colectiva supera sistemáticamente a la individual. Buscó activamente a Paul Allen, contrató a los mejores programadores disponibles y creó una cultura de intercambio de ideas sin jerarquías rígidas.<br><br>
+    En sus Think Weeks, leía específicamente papeles técnicos enviados por empleados de todos los niveles de Microsoft — buscando ideas innovadoras en toda la organización, no solo en la cima.`
+  },
+  escala: {
+    tag:'Competencia · Estratégica', tc:'#3ecf8e', tt:'#0a0a0f',
+    title:'Visión a escala global',
+    sub:'Diseñar para millones, no para unos pocos',
+    body:`Una de las marcas del pensamiento creativo de Gates es que siempre imagina sus soluciones aplicadas al mayor número posible de personas. Su visión original de 1975, "una computadora en cada escritorio y en cada hogar", era considerada ridícula por sus contemporáneos.<br><br>
+    En la Fundación aplica exactamente la misma lógica: no busca ayudar a mil personas, busca estructuras que funcionen para <b>millones de personas simultáneamente</b>.`
+  },
+  libros: {
+    tag:'Hábito · Preparación', tc:'#f5a623', tt:'#0a0a0f',
+    title:'50 libros al año',
+    sub:'Lectura como combustible creativo sistemático',
+    body:`Gates lee aproximadamente un libro por semana en disciplinas muy variadas: epidemiología, historia económica, física, psicología del comportamiento, filosofía política, energía limpia.<br><br>
+    Este hábito alimenta directamente su capacidad para conectar ideas de dominios aparentemente no relacionados. Comparte sus reseñas más importantes en <b>GatesNotes</b>, con notas sobre por qué cada libro influyó en su forma de ver el mundo.`
+  },
+  notas: {
+    tag:'Hábito · Procesamiento', tc:'#f5a623', tt:'#0a0a0f',
+    title:'Notas al margen',
+    sub:'El pensamiento activo como práctica sistemática',
+    body:`Gates no lee pasivamente. Anota preguntas, conexiones, contraargumentos y aplicaciones prácticas directamente en los márgenes de cada libro. Este hábito externaliza el pensamiento y facilita enormemente la síntesis creativa posterior.<br><br>
+    La neurociencia cognitiva confirma que escribir a mano durante la lectura activa regiones del cerebro asociadas con la comprensión profunda y la memoria a largo plazo.`
+  },
+  interdis: {
+    tag:'Hábito · Expansión', tc:'#f5a623', tt:'#0a0a0f',
+    title:'Pensamiento interdisciplinar',
+    sub:'Cruzar fronteras entre campos del conocimiento',
+    body:`Algunas de las innovaciones más importantes de Gates nacieron de aplicar principios de un campo a problemas de otro completamente distinto.<br><br>
+    La lógica de distribución de software se aplicó a la distribución de vacunas. Los modelos estadísticos de Microsoft se aplicaron a epidemiología global. La ingeniería de sistemas se aplicó a reformas educativas. <b>Las fronteras entre disciplinas son donde viven las ideas más originales.</b>`
+  },
+  retroal: {
+    tag:'Hábito · Aprendizaje', tc:'#f5a623', tt:'#0a0a0f',
+    title:'Búsqueda activa de retroalimentación',
+    sub:'Los errores como información, no como fracasos',
+    body:`Gates es conocido por buscar activamente retroalimentación crítica, incluso cuando resulta incómoda. En Microsoft era famoso por sus sesiones de revisión de código donde exigía que cada decisión de diseño se justificara con argumentos sólidos.<br><br>
+    <div class="quote">"Tus clientes más insatisfechos son tu mayor fuente de aprendizaje." — Bill Gates</div>`
+  },
+  optimismo: {
+    tag:'Hábito · Actitud', tc:'#f5a623', tt:'#0a0a0f',
+    title:'Optimismo estructural',
+    sub:'Creer en el progreso como premisa de trabajo',
+    body:`Gates no es optimista por temperamento emocional sino por convicción basada en datos históricos. Cree, con evidencia, que los problemas más grandes del mundo tienen solución si se aplican creatividad, ciencia y recursos adecuados.<br><br>
+    Este optimismo le permite abordar retos que a la mayoría le parecen imposibles, como erradicar la poliomielitis o desarrollar reactores nucleares de cuarta generación de bajo costo.`
+  },
+  curiosidad: {
+    tag:'Personalidad · Rasgo', tc:'#f06449', tt:'#0a0a0f',
+    title:'Curiosidad insaciable',
+    sub:'Motor del aprendizaje creativo desde la infancia',
+    body:`A los 13 años, Gates escribió su primer programa de software. A los 17, cofundó Traf-O-Data para analizar tráfico vehicular con una computadora. Su curiosidad no estaba dirigida por el dinero ni por el éxito: era impulsada por el deseo puro de entender cómo funcionan las cosas y cómo podrían funcionar mejor.<br><br>
+    Las personas creativas se hacen preguntas que otros no formulan. Gates es un ejemplo arquetípico de esta característica.`
+  },
+  tolerancia: {
+    tag:'Personalidad · Rasgo', tc:'#f06449', tt:'#0a0a0f',
+    title:'Tolerancia a la ambigüedad',
+    sub:'Comodidad con lo incierto y el largo plazo',
+    body:`Los problemas que Gates aborda en la Fundación —erradicación de enfermedades, cambio climático, educación de calidad— no tienen soluciones claras ni plazos definidos. Su tolerancia a la incertidumbre le permite mantenerse comprometido durante décadas con resultados inciertos.<br><br>
+    La intolerancia a la ambigüedad es uno de los mayores inhibidores de la creatividad: impulsa a cerrar los problemas demasiado pronto, eligiendo la primera solución disponible en lugar de la más innovadora.`
+  },
+  autoexig: {
+    tag:'Personalidad · Rasgo', tc:'#f06449', tt:'#0a0a0f',
+    title:'Autoexigencia',
+    sub:'El perfeccionismo funcional como motor de innovación',
+    body:`Gates estableció estándares extremadamente altos en Microsoft. Era conocido por decir "eso es la idea más estúpida que he escuchado" durante las revisiones de código — no por crueldad, sino porque creía que la presión hacia la excelencia era la condición necesaria para las mejores ideas.<br><br>
+    <div class="quote">"Si todo lo que me dijera mi entrenador de bridge es que soy 'satisfactorio', no tendría ninguna esperanza de mejorar." — Bill Gates</div>`
+  },
+  autonomia: {
+    tag:'Personalidad · Rasgo', tc:'#f06449', tt:'#0a0a0f',
+    title:'Autonomía intelectual',
+    sub:'Defender ideas impopulares con datos',
+    body:`Gates no necesita consenso para explorar una dirección. En los años 80 apostó por el software como el verdadero negocio del futuro cuando la industria entera creía que el valor estaba en el hardware. En los 2000, la Fundación invirtió en tuberculosis resistente cuando la comunidad global prefería ignorar el problema.<br><br>
+    <b>La autonomía intelectual no es terquedad</b>: es la capacidad de mantener una perspectiva propia frente a la presión social, respaldada por evidencia y razonamiento riguroso.`
+  },
+  mision: {
+    tag:'Personalidad · Motivación', tc:'#f06449', tt:'#0a0a0f',
+    title:'Misión global como motivador',
+    sub:'La creatividad al servicio de un propósito trascendente',
+    body:`Desde su salida progresiva de Microsoft, Gates ha orientado toda su capacidad creativa a resolver los mayores desafíos de la humanidad: erradicar enfermedades prevenibles, mejorar la educación, combatir el cambio climático y desarrollar energía nuclear segura y accesible.<br><br>
+    Esta misión trasciende el éxito personal y es, según la psicología de la motivación intrínseca (Deci & Ryan, 2000), uno de los catalizadores más poderosos de la creatividad sostenida en el tiempo.`
+  }
+};
+
+function toggleBranch(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function openModal(key) {
+  const d = DATA[key]; if (!d) return;
+  document.getElementById('m-tag').textContent = d.tag;
+  document.getElementById('m-tag').style.background = d.tc + '22';
+  document.getElementById('m-tag').style.color = d.tc;
+  document.getElementById('m-title').textContent = d.title;
+  document.getElementById('m-sub').textContent = d.sub;
+  document.getElementById('m-body').innerHTML = d.body;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// open all branches by default
+['b1','b2','b3','b4'].forEach(id => document.getElementById(id).classList.add('open'));
+</script>
+</body>
+</html>
